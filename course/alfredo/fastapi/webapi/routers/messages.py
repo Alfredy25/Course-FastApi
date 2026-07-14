@@ -22,7 +22,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[Message])
 def list_messages(service: MessageService = Depends(get_message_service)):
-    print(f'ID del servicio: {id(service)}')
+    # print(f'ID del servicio: {id(service)}')
     return service.find_all()
 
 @router.get('/{message_id}', response_model=Optional[Message])

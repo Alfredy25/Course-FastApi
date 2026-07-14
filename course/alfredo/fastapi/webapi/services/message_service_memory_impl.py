@@ -15,6 +15,7 @@ class MessageServiceMemoryImpl(MessageService):
         ]
 
     def find_all(self) -> List[Message]:
+        # print(f'ID del servicio: {id(self)}')
         return self._messages
 
     def find_by_id(self, message_id: int) -> Optional[Message]:
