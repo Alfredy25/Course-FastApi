@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from course.alfredo.fastapi.webapi.models.message import Message
@@ -8,11 +9,21 @@ class MessageServiceMemoryImpl(MessageService):
 
     def __init__(self):
         self._messages: List[Message] = [
-            Message(id=1, text='Hola Mundo Python con fastApi'),
-            Message(id=2, text='Seccion de FastApi en progreso...'),
-            Message(id=3, text='Este es un mensaje de prueba!'),
-            Message(id=4, text='FastApi con service'),
-            Message(id=5, text='Inversion de control con Depends'),
+            Message(id=1, text='Hola Mundo Python con fastApi',
+                    author_email='andres@correo.com', # type: ignore
+                    priority=1),
+            Message(id=2, text='Seccion de FastApi en progreso...',
+                    author_email=None,
+                    priority=3),
+            Message(id=3, text='Este es un mensaje de prueba!',
+                    author_email='pepe@correo.com', # type: ignore
+                    priority=4),
+            Message(id=4, text='FastApi con service',
+                    author_email='demo@correo.com', # type: ignore
+                    priority=1),
+            Message(id=5, text='Inversion de control con Depends',
+                    author_email='jhon@doe.com', # type: ignore
+                    priority=5)
         ]
         self._next_id = 6
 
@@ -32,7 +43,10 @@ class MessageServiceMemoryImpl(MessageService):
     def update(self, message_id: int, message: Message) -> Optional[Message]:
         for index, msg in enumerate(self._messages):
             if msg.id == message_id:
-                update = Message(id=msg.id, text=message.text)
+                update = Message(id=msg.id, text=message.text,
+                                 author_email=message.author_email,
+                                 priority=message.priority
+                                 )
                 self._messages[index] = update
                 return update
         return None
