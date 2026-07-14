@@ -5,6 +5,7 @@ from course.alfredo.fastapi.webapi.services.message_service import MessageServic
 
 
 class MessageServiceMemoryImpl(MessageService):
+
     def __init__(self):
         self._messages: List[Message] = [
             Message(id=1, text='Hola Mundo Python con fastApi'),
@@ -13,6 +14,7 @@ class MessageServiceMemoryImpl(MessageService):
             Message(id=4, text='FastApi con service'),
             Message(id=5, text='Inversion de control con Depends'),
         ]
+        self._next_id = 6
 
     def find_all(self) -> List[Message]:
         return self._messages
@@ -20,3 +22,24 @@ class MessageServiceMemoryImpl(MessageService):
     def find_by_id(self, message_id: int) -> Optional[Message]:
         message_found = next((msg for msg in self._messages if msg.id == message_id), None)
         return message_found
+
+    def create(self, new_message: Message) -> Message:
+        new_message.id = self._next_id
+        self._messages.append(new_message)
+        self._next_id += 1
+        return new_message
+
+    def update(self, message_id: int, message: Message) -> Optional[Message]:
+        for index, msg in enumerate(self._messages):
+            if msg.id == message_id:
+                update = Message(id=msg.id, text=message.text)
+                self._messages[index] = update
+                return update
+        return None
+
+    def delete(self, message_id: int) -> bool:
+        for index, msg in enumerate(self._messages):
+            if msg.id == message_id:
+                del self._messages[index]
+                return True
+        return False

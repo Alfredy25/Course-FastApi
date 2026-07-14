@@ -10,5 +10,5 @@ Un DTO es un objeto con datos.
 from pydantic import BaseModel
 
 class Message(BaseModel):
-    id: int
+    id: int | None = None
     text: str
