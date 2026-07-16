@@ -2,10 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from course.alfredo.fastapi.webapi.config.db import Base, engine
 from course.alfredo.fastapi.webapi.routers import messages
 
 app = FastAPI()
 
+Base.metadata.create_all(bind=engine)
 app.include_router(messages.router, prefix="/messages", tags=["messages"])
 
 @app.get("/")
