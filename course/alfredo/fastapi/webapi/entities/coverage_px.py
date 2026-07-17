@@ -1,13 +1,6 @@
 from course.alfredo.fastapi.webapi.config.db import Base
-from enum import Enum as PyEnum
 from sqlalchemy import String, Enum, Index
 from sqlalchemy.orm import Mapped, mapped_column
-
-
-class CoverageType(str, PyEnum):
-    PAQUETEXPRESS = "PAQUETEXPRESS"
-    ZONA_PLUS = "ZONA PLUS"
-    ZONA_PLUS_ESPECIAL = "ZONA PLUS ESPECIAL"
 
 class CoveragePX(Base):
     __tablename__ = "coverages_px"
@@ -21,8 +14,11 @@ class CoveragePX(Base):
     city: Mapped[str] = mapped_column(String(100), nullable=False)
     state: Mapped[str] = mapped_column(String(100), nullable=False)
 
-    coverage_type: Mapped[CoverageType] = mapped_column(Enum(CoverageType), nullable=False)
+    coverage_type: Mapped[Enum] = mapped_column(Enum("PAQUETEXPRESS", "ZONA PLUS", "ZONA PLUS ESPECIAL", name="coverage_type_enum"), nullable=False)
 
-    __table_args__ = (Index("idx_postal_code", "postal_code"))
+    __table_args__ = (Index("idx_postal_code", "postal_code"),)
 
-
+    def __repr__(self) -> str:
+        return (f"id_delivery: {self.id_delivery}, branch: {self.branch} place: {self.place}, postal_code: {self.postal_code},\n"
+                f"township: {self.township}, municipality: {self.municipality},\n"
+                f"city: {self.city}, state: {self.state}, coverage_type: {self.coverage_type}")
