@@ -12,7 +12,7 @@ El router no debería tener directamente lógica pesada de negocio.
 """
 
 from typing import List, Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 
 from course.alfredo.fastapi.webapi.dependencies.message_dependencies import get_message_service
 from course.alfredo.fastapi.webapi.models.message import Message
@@ -27,9 +27,19 @@ def list_messages(service: MessageService = Depends(get_message_service)):
 
 @router.get('/{message_id}', response_model=Optional[Message])
 def get_message(message_id: int, service: MessageService = Depends(get_message_service)):
-    return service.find_by_id(message_id)
+    message = service.find_by_id(message_id)
+    if message is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Mensaje con id={message_id} no existe")
+    return message
 
 @router.get('/details/', response_model=Optional[Message])
 def get_message_url_param(message_id: int = Query( ..., ge=1),
                           service: MessageService = Depends(get_message_service)):
-    return service.find_by_id(message_id)
+
+    message = service.find_by_id(message_id)
+    if message is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Mensaje con id={message_id} no existe")
+
+    return message
